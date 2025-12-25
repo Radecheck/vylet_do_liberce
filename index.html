@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seznamka</title>
+
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #e6e6e6;
+      margin: 0;
+      padding: 0;
+    }
+
+    .page {
+      display: none;
+      max-width: 900px;
+      margin: 40px auto;
+      background: white;
+      border: 2px solid #999;
+      padding: 20px;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    h1 {
+      background: #003399;
+      color: white;
+      padding: 10px;
+      font-size: 22px;
+      margin: -20px -20px 20px -20px;
+    }
+
+    .button {
+      margin-top: 15px;
+      padding: 12px;
+      font-size: 16px;
+      background: #003399;
+      color: white;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .button:hover {
+      background: #002266;
+    }
+
+    .center {
+      text-align: center;
+      font-size: 18px;
+    }
+
+    /* ===== PAGE 1 ===== */
+    .content {
+      display: flex;
+      gap: 20px;
+    }
+
+    .options {
+      flex: 2;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .option {
+      border: 1px solid #999;
+      padding: 10px;
+      text-align: center;
+      background: #f5f5f5;
+      font-size: 14px;
+    }
+
+    .ad {
+      flex: 1;
+      border: 2px dashed red;
+      padding: 10px;
+      background: #fff5f5;
+      font-size: 14px;
+    }
+
+    .ad strong {
+      color: red;
+      font-size: 16px;
+    }
+
+    /* ===== WHEEL ===== */
+    .wheel-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .wheel-wrapper {
+      position: relative;
+      width: 300px;
+      height: 300px;
+    }
+
+    .wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 6px solid #333;
+      background: conic-gradient(
+        #ffd966 0deg 45deg,
+        #ff9999 45deg 90deg,
+        #99ccff 90deg 135deg,
+        #99ff99 135deg 180deg,
+        #ffd966 180deg 225deg,
+        #ff9999 225deg 270deg,
+        #99ccff 270deg 315deg,
+        #99ff99 315deg 360deg
+      );
+      transition: transform 6s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    .pointer {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 30px solid red;
+    }
+
+    .label {
+      position: absolute;
+      width: 50%;
+      left: 50%;
+      top: 50%;
+      transform-origin: 0% 0%;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- PAGE 1 -->
+<div class="page active" id="page1">
+  <h1>💘 Seznamka – Najdi, co hledáš</h1>
+
+  <div class="content">
+    <div class="options">
+      <div class="option">🔥 Vášeň</div>
+      <div class="option">😈 Chtíč</div>
+      <div class="option">👭 Kamarádka hledá kamarádku</div>
+      <div class="option">😉 Nezávazný flirt</div>
+      <div class="option">💍 Jen vážně</div>
+      <div class="option">🚪 Přijdu hned</div>
+    </div>
+
+    <div class="ad">
+      <strong>PLASTOVÁ OKNA</strong><br><br>
+      ✔ Nejlepší ceny<br>
+      ✔ Montáž zdarma<br>
+      ✔ Sleva 30 %<br><br>
+      👉 Vyměňte svá stará okna ještě dnes!
+    </div>
+  </div>
+
+  <button class="button" onclick="nextPage(2)">
+    🎁 Vyzvednout dárek
+  </button>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page" id="page2">
+  <h1>🎡 Kolo štěstí</h1>
+
+  <div class="wheel-container">
+    <p class="center" id="resultText">Klikni na kolo a zkus štěstí</p>
+
+    <div class="wheel-wrapper">
+      <div class="pointer"></div>
+      <div class="wheel" id="wheel"></div>
+
+      <div class="label" style="transform: rotate(0deg) translateX(10px);">Text 1</div>
+      <div class="label" style="transform: rotate(45deg) translateX(10px);">Text 2</div>
+      <div class="label" style="transform: rotate(90deg) translateX(10px);">Text 3</div>
+      <div class="label" style="transform: rotate(135deg) translateX(10px);">Text 4</div>
+      <div class="label" style="transform: rotate(180deg) translateX(10px);">Text 5</div>
+      <div class="label" style="transform: rotate(225deg) translateX(10px);">Text 6</div>
+      <div class="label" style="transform: rotate(270deg) translateX(10px);">Text 7</div>
+      <div class="label" style="transform: rotate(315deg) translateX(10px);">Společně strávený víkend</div>
+    </div>
+
+    <button class="button" id="spinBtn" onclick="spinWheel()">
+      Roztočit kolo
+    </button>
+
+    <button class="button hidden" id="claimBtn" onclick="nextPage(3)">
+      🎁 Vyzvednout dárek
+    </button>
+  </div>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page" id="page3">
+  <h1>🎁 Výběr dárku</h1>
+
+  <button class="button">Hezký</button>
+  <button class="button">Hnusný</button>
+  <button class="button" onclick="nextPage(4)">Odvoz Liberec</button>
+</div>
+
+<!-- PAGE 4 -->
+<div class="page" id="page4">
+  <h1>🏨 Víkendový pobyt</h1>
+
+  <p class="center">
+    <strong>Clarion Grandhotel</strong><br><br>
+    ✨ Wellness<br>
+    🥐 Snídaně v ceně<br>
+    🛏️ Pohodlí a relax<br><br>
+    Víkend jen pro nás dva ❤️
+  </p>
+
+  <button class="button" onclick="rickRoll()">
+    🎁 Vyzvednout odměnu
+  </button>
+</div>
+
+<script>
+  let spun = false;
+
+  function nextPage(n) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page' + n).classList.add('active');
+  }
+
+  function spinWheel() {
+    if (spun) return;
+    spun = true;
+
+    const wheel = document.getElementById('wheel');
+    const spinBtn = document.getElementById('spinBtn');
+    const resultText = document.getElementById('resultText');
+    const claimBtn = document.getElementById('claimBtn');
+
+    spinBtn.style.display = 'none';
+    resultText.textContent = 'Točíme kolo štěstí…';
+
+    wheel.style.transform = 'rotate(1890deg)';
+
+    setTimeout(() => {
+      resultText.innerHTML =
+        '<strong>Vyhrála jsi:</strong><br>Společně strávený víkend ❤️';
+      claimBtn.classList.remove('hidden');
+    }, 6000);
+  }
+
+  function rickRoll() {
+    window.open(
+      'https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ&start_radio=1',
+      '_blank'
+    );
+  }
+</script>
+
+</body>
+</html>
